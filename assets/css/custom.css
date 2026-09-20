@@ -45,6 +45,44 @@
   transform: scale(1.05);
 }
 
+/* Site body container with wide, modern layout matching Weaxs in Nokstella aesthetic */
+body.site-body-container {
+  max-width: 1540px !important;
+  margin-inline: auto !important;
+  padding-inline: 1rem !important;
+  box-sizing: border-box !important;
+}
+
+@media (min-width: 640px) {
+  body.site-body-container {
+    padding-inline: 1.75rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  body.site-body-container {
+    padding-inline: 2.5rem !important;
+  }
+}
+
+@media (min-width: 1280px) {
+  body.site-body-container {
+    padding-inline: 3rem !important;
+  }
+}
+
+/* Non-homepage header spacer to prevent ANY content overlap */
+.header-spacer {
+  height: 4.75rem;
+  width: 100%;
+  flex-shrink: 0;
+}
+@media (min-width: 640px) {
+  .header-spacer {
+    height: 5.75rem;
+  }
+}
+
 /* Sleek, thin floating header */
 .homepage-header {
   position: fixed !important;
@@ -63,12 +101,13 @@
 }
 
 .homepage-header .header-bar-inner {
-  max-width: 64rem; /* sleek, balanced width */
+  max-width: 1480px;
+  width: 100%;
   margin-inline: auto;
-  border-radius: 9999px; /* sleek pill */
-  padding: 0.2rem 1rem;
+  border-radius: 9999px;
+  padding: 0.25rem 1.25rem;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(15, 23, 42, 0.8);
+  background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
@@ -76,8 +115,8 @@
 
 /* Thinner navigation bar elements */
 .homepage-header nav {
-  height: 2rem !important; /* was 3rem / 48px */
-  gap: 1rem !important;
+  height: 2rem !important;
+  gap: 1.25rem !important;
 }
 
 .homepage-header .main-menu {
@@ -121,11 +160,468 @@
   pointer-events: auto !important;
 }
 
-/* Articles section below the hero */
-.articles-feed-section {
+/* Articles section below the hero with generous top padding & scroll-margin */
+.articles-feed-section,
+#articles-feed {
   position: relative;
   z-index: 10;
   width: 100%;
-  padding-top: 4rem;
+  padding-top: 4.5rem;
   padding-bottom: 6rem;
+  scroll-margin-top: 5rem;
 }
+
+/* Wide, aesthetic glassmorphism post cards */
+.article-link--card {
+  background: rgba(15, 23, 42, 0.75) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 0.75rem !important;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.article-link--card:hover {
+  transform: translateY(-4px) !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+  box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Expand reading width for single posts and prose content so content fits the screen */
+.prose,
+.max-w-prose,
+#single_header,
+.article-content {
+  max-width: 100% !important;
+}
+
+article {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+section.prose {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Single post 2-column layout: wide content on left, TOC on right */
+.single-post-layout {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+@media (max-width: 1023px) {
+  .single-post-toc {
+    order: -1 !important;
+    width: 100% !important;
+    margin-bottom: 1.5rem !important;
+  }
+  .single-post-content {
+    order: 1 !important;
+    width: 100% !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .single-post-layout {
+    flex-direction: row !important;
+    align-items: stretch !important;
+    justify-content: space-between !important;
+    gap: 3rem !important;
+  }
+  .single-post-content {
+    order: 1 !important;
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    width: auto !important;
+    max-width: calc(100% - 20rem) !important;
+  }
+  .single-post-toc {
+    order: 2 !important;
+    width: 17rem !important;
+    min-width: 17rem !important;
+    max-width: 17rem !important;
+    flex-shrink: 0 !important;
+    align-self: stretch !important;
+  }
+  .single-post-toc .toc {
+    position: sticky !important;
+    top: 5.5rem !important;
+    max-height: calc(100vh - 7rem) !important;
+    overflow-y: auto !important;
+  }
+}
+
+footer.max-w-prose {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Ensure code blocks, tables, and pre blocks span full reading width */
+.prose pre,
+.prose table {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Scroll margin on headings so jumping via TOC or anchor doesn't hide behind floating header */
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6,
+.anchor {
+  scroll-margin-top: 5.5rem !important;
+}
+
+/* Articles Search Bar */
+.articles-search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  margin-bottom: 1.5rem;
+}
+
+.articles-search-box {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  height: 2.875rem !important;
+  padding: 0 1rem !important;
+  background: rgba(15, 23, 42, 0.75) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 9999px !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.articles-search-box:focus-within {
+  border-color: #38bdf8 !important;
+  background: rgba(15, 23, 42, 0.9) !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2), 0 10px 25px -5px rgba(0, 0, 0, 0.4) !important;
+}
+
+.articles-search-box .search-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 1.125rem !important;
+  height: 1.125rem !important;
+  margin-right: 0.75rem !important;
+  color: #94a3b8 !important;
+  flex-shrink: 0 !important;
+  transition: color 0.2s ease !important;
+}
+
+.articles-search-box:focus-within .search-icon {
+  color: #38bdf8 !important;
+}
+
+.articles-search-box input {
+  flex: 1 1 0% !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  font-size: 0.875rem !important;
+  color: #f1f5f9 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.articles-search-box input::placeholder {
+  color: #64748b !important;
+}
+
+.articles-search-box .clear-btn {
+  display: none;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  margin-left: 0.5rem !important;
+  border-radius: 9999px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #94a3b8 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.articles-search-box .clear-btn:hover {
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Category & Tag Filter Toolbar */
+.articles-filter-toolbar {
+  background: rgba(15, 23, 42, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  padding: 0.875rem 1.15rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.cat-filter-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+  padding: 0.35rem 0.85rem !important;
+  border-radius: 9999px !important;
+  font-size: 0.8125rem !important;
+  font-weight: 500 !important;
+  background: rgba(15, 23, 42, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #94a3b8 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  user-select: none !important;
+}
+
+.cat-filter-btn .count {
+  font-size: 0.725rem !important;
+  opacity: 0.65;
+}
+
+.cat-filter-btn:hover {
+  background: rgba(56, 189, 248, 0.12) !important;
+  border-color: rgba(56, 189, 248, 0.35) !important;
+  color: #38bdf8 !important;
+}
+
+.cat-filter-btn.active-filter {
+  background: rgba(56, 189, 248, 0.2) !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.25) !important;
+}
+
+.cat-filter-btn.active-filter .count {
+  opacity: 0.9;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0 0.35rem;
+}
+
+/* Tag Dropdown Select */
+.tag-filter-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: rgba(15, 23, 42, 0.6) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E") no-repeat right 0.65rem center / 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 9999px !important;
+  padding: 0.35rem 2rem 0.35rem 0.85rem !important;
+  font-size: 0.8125rem !important;
+  color: #94a3b8 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  outline: none !important;
+}
+
+.tag-filter-select:hover {
+  background-color: rgba(56, 189, 248, 0.12) !important;
+  border-color: rgba(56, 189, 248, 0.35) !important;
+  color: #38bdf8 !important;
+}
+
+.tag-filter-select.has-tag {
+  background-color: rgba(56, 189, 248, 0.2) !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.25) !important;
+}
+
+.tag-filter-select option {
+  background: #0f172a !important;
+  color: #f1f5f9 !important;
+}
+
+/* Toggle tags button */
+.toggle-tags-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+  padding: 0.35rem 0.75rem !important;
+  border-radius: 9999px !important;
+  font-size: 0.8125rem !important;
+  background: transparent !important;
+  border: 1px dashed rgba(255, 255, 255, 0.15) !important;
+  color: #94a3b8 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.toggle-tags-btn:hover {
+  border-color: rgba(56, 189, 248, 0.4) !important;
+  color: #38bdf8 !important;
+}
+
+/* Tag filter pill chips (in collapsible container) */
+.tag-filter-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 0.25rem 0.65rem !important;
+  border-radius: 9999px !important;
+  font-size: 0.75rem !important;
+  background: rgba(15, 23, 42, 0.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #94a3b8 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.tag-filter-btn:hover {
+  background: rgba(56, 189, 248, 0.15) !important;
+  border-color: rgba(56, 189, 248, 0.35) !important;
+  color: #38bdf8 !important;
+}
+
+.tag-filter-btn.active-filter {
+  background: rgba(56, 189, 248, 0.22) !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25) !important;
+}
+
+/* Active filter chip */
+.active-chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+  padding: 0.15rem 0.6rem !important;
+  border-radius: 9999px !important;
+  font-size: 0.75rem !important;
+  background: rgba(56, 189, 248, 0.15) !important;
+  border: 1px solid rgba(56, 189, 248, 0.35) !important;
+  color: #38bdf8 !important;
+  font-weight: 500 !important;
+}
+
+.active-chip button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.active-chip button:hover {
+  color: #ffffff;
+}
+
+
+/* Sticky TOC ("Jump to") on single posts matching reference */
+.single-post-toc {
+  font-size: 0.875rem;
+}
+
+.single-post-toc #TableOfContents {
+  max-width: 100%;
+}
+
+.single-post-toc #TableOfContents ul {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.single-post-toc #TableOfContents ul li {
+  margin: 0.4rem 0 !important;
+  line-height: 1.45 !important;
+}
+
+.single-post-toc #TableOfContents ul ul {
+  padding-left: 0.85rem !important;
+  margin-top: 0.25rem !important;
+  font-size: 0.8125rem !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.single-post-toc #TableOfContents a {
+  color: #94a3b8 !important;
+  text-decoration: none !important;
+  display: block;
+  transition: color 0.2s ease;
+  word-break: break-word;
+}
+
+.single-post-toc #TableOfContents a:hover {
+  color: #38bdf8 !important;
+  text-decoration: none !important;
+}
+
+.single-post-toc #TableOfContents a.active {
+  color: #38bdf8 !important;
+  font-weight: 600 !important;
+  text-decoration: underline !important;
+  text-underline-offset: 3px !important;
+}
+
+/* Reading Progress Bar at the top of viewport matching reference */
+#reading-progress {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 99999 !important;
+  height: 3.5px !important;
+  pointer-events: none !important;
+  background: linear-gradient(90deg, #38bdf8, #818cf8, #a855f7) !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.8), 0 0 18px rgba(168, 85, 247, 0.4) !important;
+  transition: width 0.08s ease-out !important;
+}
+
+/* Fully readable, wide code blocks */
+.prose .highlight,
+.prose .highlight-wrapper,
+.prose pre {
+  width: 100% !important;
+  max-width: 100% !important;
+  border-radius: 0.625rem !important;
+}
+
+.prose pre {
+  padding: 1.15rem 1.35rem !important;
+  font-size: 0.875rem !important;
+  line-height: 1.65 !important;
+  background: rgba(15, 23, 42, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  overflow-x: auto !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3) !important;
+}
+
+.prose code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+}
+
+.prose :not(pre) > code {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding: 0.15rem 0.375rem !important;
+  border-radius: 0.375rem !important;
+  font-size: 0.85em !important;
+  color: #fdba74 !important;
+}
+

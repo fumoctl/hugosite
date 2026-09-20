@@ -1,6 +1,6 @@
 # -- Site Configuration --
 theme = "blowfish"
-baseURL = "/"
+baseURL = "https://fumoctl.com/"
 defaultContentLanguage = "en"
 
 enableRobotsTXT = true

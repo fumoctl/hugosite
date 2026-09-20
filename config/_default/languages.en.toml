@@ -2,7 +2,7 @@ disabled = false
 locale = "en"
 label = "English"
 weight = 1
-title = "fumoctl"
+title = "Fumoctl"
 
 [params]
   displayName = "EN"
@@ -16,7 +16,7 @@ title = "fumoctl"
   headline = "Argentinian systems administrator & Informatics student.<br>FOSS, declarative systems & homelabbing."
   image = "images/avatar.jpg"
   imageQuality = 96
-  bio = "Argentinian systems administrator and Business Informatics student with a passion for free and open-source software, rock-solid systems architecture, and digital sovereignty."
+  bio = "Argentinian systems administrator & Informatics student.<br>FOSS, declarative systems & homelabbing."
   links = [
     { link = "https://fumoctl.com/" },
     { email = "mailto:juanu@fumoctl.com" },

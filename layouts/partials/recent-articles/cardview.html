@@ -1,0 +1,12 @@
+{{ $recentArticles := 6 }}
+{{ with .Site.Params.homepage.showRecentItems }}
+  {{ $recentArticles = . }}
+{{ end }}
+
+<section class="w-full grid gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-3">
+  {{ range first $recentArticles (.Paginate (where .Site.RegularPages "Type" "in"
+    .Site.Params.mainSections)).Pages
+  }}
+    {{ partial "article-link/card.html" . }}
+  {{ end }}
+</section>

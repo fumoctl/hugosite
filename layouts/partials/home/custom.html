@@ -84,10 +84,33 @@
   <!-- Animated Scroll-Down Prompt strictly anchored at bottom of 100vh hero -->
   <div
     class="hero-scroll-indicator text-neutral-400 hover:text-white transition-colors duration-200 group"
-    onclick="const feed = document.getElementById('articles-feed'); if (feed) { feed.scrollIntoView({behavior: 'smooth'}); } else { window.scrollTo({top: window.innerHeight, behavior: 'smooth'}); }">
+    onclick="const feed = document.getElementById('articles-feed'); if (feed) { window.scrollTo({top: feed.offsetTop, behavior: 'smooth'}); } else { window.scrollTo({top: window.innerHeight, behavior: 'smooth'}); }">
     <span class="text-xs uppercase tracking-widest mb-1.5 opacity-60 group-hover:opacity-100 transition-opacity">Scroll to explore</span>
     <svg class="w-5 h-5 animate-bounce opacity-70 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
     </svg>
   </div>
 </div>
+
+<script>
+  (function() {
+    if (window.location.hash === "#articles-feed" || window.location.search.indexOf("scroll=1") !== -1) {
+      function doScroll() {
+        const feed = document.getElementById("articles-feed");
+        if (feed) {
+          feed.scrollIntoView();
+          const header = document.getElementById("floating-header");
+          if (header) {
+            header.classList.remove("is-hidden");
+            header.classList.add("is-visible");
+          }
+        }
+      }
+      if (document.readyState === "complete" || document.readyState === "interactive") {
+        setTimeout(doScroll, 100);
+      } else {
+        window.addEventListener("load", doScroll);
+      }
+    }
+  })();
+</script>

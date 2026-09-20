@@ -1,0 +1,346 @@
+{{ define "main" }}
+  <header class="mb-6">
+    <h1 class="text-4xl sm:text-5xl font-extrabold text-neutral-900 dark:text-white tracking-tight">Articles</h1>
+    <p class="mt-2 text-base text-neutral-400">Deep dives into declarative systems, NixOS, homelabbing, and Linux infrastructure.</p>
+  </header>
+
+  <!-- Modern Search Bar -->
+  <div class="articles-search-wrapper">
+    <div class="articles-search-box">
+      <span class="search-icon" aria-hidden="true">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+      </span>
+      <input
+        type="text"
+        id="posts-search-box"
+        placeholder="Search articles by title, topic, or keyword..."
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="Search articles">
+      <button
+        id="posts-search-clear-btn"
+        type="button"
+        class="clear-btn"
+        title="Clear search"
+        aria-label="Clear search">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Unified Filter Toolbar -->
+  <div class="articles-filter-toolbar mb-8">
+    <div class="flex flex-wrap items-center gap-2">
+      <!-- Category Pills -->
+      <button
+        type="button"
+        data-category="all"
+        class="cat-filter-btn active-filter">
+        All <span class="count">({{ len .Pages }})</span>
+      </button>
+      {{ range $name, $taxonomy := site.Taxonomies.categories }}
+        <button
+          type="button"
+          data-category="{{ $name | lower }}"
+          class="cat-filter-btn">
+          {{ $name | humanize | title }} <span class="count">({{ len $taxonomy.Pages }})</span>
+        </button>
+      {{ end }}
+
+      <div class="toolbar-divider hidden sm:block"></div>
+
+      <!-- Tag Dropdown Selector -->
+      <div class="relative inline-block tag-dropdown-wrapper">
+        <select id="tag-filter-select" class="tag-filter-select" aria-label="Filter by tag">
+          <option value="">🏷️ Filter by Tag ({{ len site.Taxonomies.tags }})</option>
+          {{ range $name, $taxonomy := site.Taxonomies.tags }}
+            <option value="{{ $name | lower }}">#{{ $name }} ({{ len $taxonomy.Pages }})</option>
+          {{ end }}
+        </select>
+      </div>
+
+      <!-- Toggle Tag Cloud Button -->
+      <button
+        type="button"
+        id="toggle-tags-pill-btn"
+        class="toggle-tags-btn"
+        title="Toggle tags cloud">
+        <span>Browse Tags</span>
+        <svg id="toggle-tags-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="transition-transform duration-200">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Collapsible Tag Cloud -->
+    <div id="collapsible-tags-container" class="hidden mt-3 pt-3 border-t border-white/10 flex flex-wrap gap-1.5">
+      {{ range $name, $taxonomy := site.Taxonomies.tags }}
+        <button
+          type="button"
+          data-tag="{{ $name | lower }}"
+          class="tag-filter-btn">
+          #{{ $name }}
+        </button>
+      {{ end }}
+    </div>
+
+    <!-- Active Filters & Result Count Bar -->
+    <div class="flex items-center justify-between mt-4 pt-3 border-t border-neutral-200/40 dark:border-neutral-800/60 text-xs text-neutral-400">
+      <div class="flex items-center gap-2 flex-wrap">
+        <span>Showing <strong id="visible-articles-count" class="text-neutral-200">{{ len .Pages }}</strong> articles</span>
+        <div id="active-filter-chips" class="flex items-center gap-1.5 flex-wrap"></div>
+      </div>
+      <button id="reset-all-filters-btn" type="button" class="hidden text-primary-400 hover:text-primary-300 hover:underline">
+        Reset filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Articles Grid -->
+  <section id="posts-articles-grid" class="w-full grid gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-3">
+    {{ range .Pages }}
+      <div
+        class="post-filter-item w-full"
+        data-title="{{ .Title | lower }}"
+        data-summary="{{ .Summary | plainify | lower }}"
+        data-categories="{{ delimit (.Params.categories | default slice) " " | lower }}"
+        data-tags="{{ delimit (.Params.tags | default slice) " " | lower }}">
+        {{ partial "article-link/card.html" . }}
+      </div>
+    {{ end }}
+  </section>
+
+  <!-- Empty state when no matches -->
+  <div id="no-posts-matching" class="hidden text-center py-20">
+    <p class="text-lg text-neutral-400 mb-4">No articles found matching your criteria.</p>
+    <button id="no-posts-reset-btn" type="button" class="px-4 py-2 rounded-lg bg-primary-500/20 text-primary-400 border border-primary-500/30 hover:bg-primary-500/30 text-sm font-medium transition-all">
+      Reset Filters
+    </button>
+  </div>
+
+  <script>
+    (function() {
+      const searchBox = document.getElementById('posts-search-box');
+      const clearBtn = document.getElementById('posts-search-clear-btn');
+      const catButtons = document.querySelectorAll('.cat-filter-btn');
+      const tagButtons = document.querySelectorAll('.tag-filter-btn');
+      const tagSelect = document.getElementById('tag-filter-select');
+      const toggleTagsBtn = document.getElementById('toggle-tags-pill-btn');
+      const toggleTagsArrow = document.getElementById('toggle-tags-arrow');
+      const collapsibleTags = document.getElementById('collapsible-tags-container');
+      const activeChipsEl = document.getElementById('active-filter-chips');
+      const postItems = document.querySelectorAll('.post-filter-item');
+      const countEl = document.getElementById('visible-articles-count');
+      const noResultsEl = document.getElementById('no-posts-matching');
+      const resetAllBtn = document.getElementById('reset-all-filters-btn');
+      const noPostsResetBtn = document.getElementById('no-posts-reset-btn');
+
+      let currentCategory = 'all';
+      let currentTag = null;
+      let searchQuery = '';
+
+      function updateActiveChips() {
+        if (!activeChipsEl) return;
+        activeChipsEl.innerHTML = '';
+
+        if (currentCategory !== 'all') {
+          const chip = document.createElement('span');
+          chip.className = 'active-chip';
+          chip.innerHTML = `<span>Category: ${currentCategory}</span><button type="button" title="Remove category filter" aria-label="Remove category filter">✕</button>`;
+          chip.querySelector('button').addEventListener('click', () => selectCategory('all'));
+          activeChipsEl.appendChild(chip);
+        }
+
+        if (currentTag) {
+          const chip = document.createElement('span');
+          chip.className = 'active-chip';
+          chip.innerHTML = `<span>Tag: #${currentTag}</span><button type="button" title="Remove tag filter" aria-label="Remove tag filter">✕</button>`;
+          chip.querySelector('button').addEventListener('click', () => selectTag(null));
+          activeChipsEl.appendChild(chip);
+        }
+
+        if (searchQuery.trim()) {
+          const chip = document.createElement('span');
+          chip.className = 'active-chip';
+          chip.innerHTML = `<span>Search: "${searchQuery}"</span><button type="button" title="Clear search" aria-label="Clear search">✕</button>`;
+          chip.querySelector('button').addEventListener('click', () => {
+            searchQuery = '';
+            if (searchBox) searchBox.value = '';
+            applyFilters();
+          });
+          activeChipsEl.appendChild(chip);
+        }
+      }
+
+      function applyFilters() {
+        let visibleCount = 0;
+        const q = searchQuery.trim().toLowerCase();
+
+        postItems.forEach(item => {
+          const title = item.getAttribute('data-title') || '';
+          const summary = item.getAttribute('data-summary') || '';
+          const categories = item.getAttribute('data-categories') || '';
+          const tags = item.getAttribute('data-tags') || '';
+
+          const matchesQuery = !q || title.includes(q) || summary.includes(q) || categories.includes(q) || tags.includes(q);
+          const matchesCategory = currentCategory === 'all' || categories.includes(currentCategory);
+          const matchesTag = !currentTag || tags.includes(currentTag);
+
+          if (matchesQuery && matchesCategory && matchesTag) {
+            item.style.display = '';
+            visibleCount++;
+          } else {
+            item.style.display = 'none';
+          }
+        });
+
+        if (countEl) countEl.textContent = visibleCount;
+        if (noResultsEl) noResultsEl.style.display = visibleCount === 0 ? 'block' : 'none';
+
+        const hasActiveFilter = currentCategory !== 'all' || currentTag !== null || q.length > 0;
+        if (resetAllBtn) resetAllBtn.style.display = hasActiveFilter ? 'inline-block' : 'none';
+        if (clearBtn) clearBtn.style.display = q.length > 0 ? 'flex' : 'none';
+
+        if (tagSelect) {
+          tagSelect.value = currentTag || '';
+          tagSelect.classList.toggle('has-tag', !!currentTag);
+        }
+
+        updateActiveChips();
+      }
+
+      function selectCategory(cat) {
+        currentCategory = (cat || 'all').toLowerCase();
+        catButtons.forEach(btn => {
+          const matches = btn.getAttribute('data-category') === currentCategory;
+          btn.classList.toggle('active-filter', matches);
+        });
+        applyFilters();
+      }
+
+      function selectTag(tag) {
+        if (!tag || currentTag === tag.toLowerCase()) {
+          currentTag = null;
+        } else {
+          currentTag = tag.toLowerCase();
+        }
+
+        tagButtons.forEach(btn => {
+          const matches = btn.getAttribute('data-tag') === currentTag;
+          btn.classList.toggle('active-filter', matches);
+        });
+
+        if (tagSelect) {
+          tagSelect.value = currentTag || '';
+          tagSelect.classList.toggle('has-tag', !!currentTag);
+        }
+
+        applyFilters();
+      }
+
+      function resetAll() {
+        searchQuery = '';
+        currentCategory = 'all';
+        currentTag = null;
+        if (searchBox) searchBox.value = '';
+        catButtons.forEach(btn => {
+          btn.classList.toggle('active-filter', btn.getAttribute('data-category') === 'all');
+        });
+        tagButtons.forEach(btn => btn.classList.remove('active-filter'));
+        if (tagSelect) {
+          tagSelect.value = '';
+          tagSelect.classList.remove('has-tag');
+        }
+        applyFilters();
+      }
+
+      if (searchBox) {
+        searchBox.addEventListener('input', e => {
+          searchQuery = e.target.value;
+          applyFilters();
+        });
+      }
+
+      if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+          searchQuery = '';
+          if (searchBox) {
+            searchBox.value = '';
+            searchBox.focus();
+          }
+          applyFilters();
+        });
+      }
+
+      catButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          selectCategory(btn.getAttribute('data-category'));
+        });
+      });
+
+      tagButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          selectTag(btn.getAttribute('data-tag'));
+        });
+      });
+
+      if (tagSelect) {
+        tagSelect.addEventListener('change', e => {
+          selectTag(e.target.value || null);
+        });
+      }
+
+      if (toggleTagsBtn && collapsibleTags) {
+        toggleTagsBtn.addEventListener('click', () => {
+          const isHidden = collapsibleTags.classList.contains('hidden');
+          collapsibleTags.classList.toggle('hidden', !isHidden);
+          if (toggleTagsArrow) {
+            toggleTagsArrow.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+          }
+        });
+      }
+
+      if (resetAllBtn) resetAllBtn.addEventListener('click', resetAll);
+      if (noPostsResetBtn) noPostsResetBtn.addEventListener('click', resetAll);
+
+      // Card tag click delegation: clicking any tag or category inside cards filters by it!
+      document.addEventListener('click', e => {
+        const tagEl = e.target.closest('a[href*="/tags/"]');
+        if (tagEl) {
+          e.preventDefault();
+          const tagPath = tagEl.getAttribute('href').replace(/.*\/tags\//, '').replace(/\/$/, '');
+          selectTag(decodeURIComponent(tagPath));
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          return;
+        }
+        const catEl = e.target.closest('a[href*="/categories/"]');
+        if (catEl) {
+          e.preventDefault();
+          const catPath = catEl.getAttribute('href').replace(/.*\/categories\//, '').replace(/\/$/, '');
+          selectCategory(decodeURIComponent(catPath));
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+
+      // Handle URL params if present
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('q')) {
+        searchQuery = urlParams.get('q');
+        if (searchBox) searchBox.value = searchQuery;
+      }
+      if (urlParams.has('category')) {
+        selectCategory(urlParams.get('category'));
+      }
+      if (urlParams.has('tag')) {
+        selectTag(urlParams.get('tag'));
+        if (collapsibleTags) collapsibleTags.classList.remove('hidden');
+      }
+
+      applyFilters();
+    })();
+  </script>
+{{ end }}

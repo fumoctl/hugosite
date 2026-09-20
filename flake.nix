@@ -26,7 +26,7 @@
           shellHook = ''
             echo "✨ Hugo + Blowfish development environment loaded."
             echo "Hugo version: $(hugo version)"
-            echo "Run 'hugo server -D' to preview your site locally."
+            echo "Run 'hugo server -D -b http://localhost:1313/' or 'nix run .' to preview locally at root."
           '';
         };
 
@@ -50,7 +50,7 @@
         apps.default = {
           type = "app";
           program = "${pkgs.writeShellScript "hugo-server" ''
-            exec ${pkgs.hugo}/bin/hugo server -D "$@"
+            exec ${pkgs.hugo}/bin/hugo server -D -b "http://localhost:1313/" "$@"
           ''}";
         };
       });

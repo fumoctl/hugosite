@@ -1,0 +1,82 @@
+<!-- Desktop Sticky TOC ("Jump To" Index) -->
+<div class="hidden lg:block toc-desktop">
+  <div class="toc-header flex items-center gap-2 mb-3 text-xs uppercase tracking-widest font-bold text-neutral-400 dark:text-neutral-500">
+    <svg width="14" height="14" style="width: 14px; height: 14px;" class="text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h10M4 18h7" />
+    </svg>
+    <span>Jump to</span>
+  </div>
+  <div class="toc-body text-sm">
+    {{ replace (.TableOfContents | emojify) `id="TableOfContents"` (printf `id="TableOfContents" aria-label="%s"` (i18n "article.table_of_contents")) | safeHTML }}
+  </div>
+</div>
+
+<!-- Mobile Collapsible TOC -->
+<details class="toc-mobile block lg:hidden my-6 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-100/50 dark:bg-neutral-900/50 p-4">
+  <summary class="flex items-center justify-between font-semibold text-sm cursor-pointer text-neutral-800 dark:text-neutral-200 select-none">
+    <span class="flex items-center gap-2">
+      <svg width="16" height="16" style="width: 16px; height: 16px;" class="text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h10M4 18h7" />
+      </svg>
+      <span>Jump to (Index)</span>
+    </span>
+    <svg width="16" height="16" style="width: 16px; height: 16px;" class="text-neutral-400 transition-transform details-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </summary>
+  <div class="pt-3 text-sm border-t border-neutral-200/60 dark:border-neutral-800/60 mt-3 ps-2">
+    {{ replace (.TableOfContents | emojify) `id="TableOfContents"` (printf `id="TableOfContentsMobile" aria-label="%s"` (i18n "article.table_of_contents")) | safeHTML }}
+  </div>
+</details>
+
+{{ if .Site.Params.smartTOC }}
+<script>
+  (function () {
+    'use strict';
+    const SCROLL_OFFSET_RATIO = 0.25;
+    const ANCHOR_SELECTOR = '.anchor, h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]';
+    const ACTIVE_CLASS = 'active';
+
+    function getActiveAnchorId(anchors, offsetRatio) {
+      const threshold = window.scrollY + window.innerHeight * offsetRatio;
+      const allLinks = [...document.querySelectorAll('#TableOfContents a[href^="#"], #TableOfContentsMobile a[href^="#"]')];
+      const tocIds = new Set(allLinks.map(link => decodeURIComponent(link.getAttribute('href').replace(/^#/, ''))));
+
+      for (let i = anchors.length - 1; i >= 0; i--) {
+        const anchor = anchors[i];
+        if (!anchor.id || !tocIds.has(anchor.id)) continue;
+        const top = anchor.getBoundingClientRect().top + window.scrollY;
+        if (top <= threshold) {
+          return anchor.id;
+        }
+      }
+      return anchors.find(anchor => anchor.id && tocIds.has(anchor.id))?.id || '';
+    }
+
+    function updateTOC() {
+      const anchors = [...document.querySelectorAll(ANCHOR_SELECTOR)];
+      const links = [...document.querySelectorAll('#TableOfContents a[href^="#"], #TableOfContentsMobile a[href^="#"]')];
+      if (!links.length || !anchors.length) return;
+
+      const activeId = getActiveAnchorId(anchors, SCROLL_OFFSET_RATIO);
+      if (!activeId) return;
+
+      links.forEach(link => {
+        const href = decodeURIComponent(link.getAttribute('href').replace(/^#/, ''));
+        const isActive = href === activeId;
+        link.classList.toggle(ACTIVE_CLASS, isActive);
+      });
+    }
+
+    function initTOC() {
+      window.addEventListener('scroll', updateTOC, { passive: true });
+      window.addEventListener('hashchange', updateTOC, { passive: true });
+      updateTOC();
+    }
+
+    document.readyState === 'loading'
+      ? document.addEventListener('DOMContentLoaded', initTOC)
+      : initTOC();
+  })();
+</script>
+{{ end }}
