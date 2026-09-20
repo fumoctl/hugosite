@@ -1,5 +1,5 @@
 ---
-title: "Building Fumoctl: A Declarative, Sovereign Tech Blog with Hugo and NixOS"
+title: "Building a Declarative, Sovereign Tech Blog with Hugo and NixOS"
 date: 2026-09-20T12:00:00+00:00
 draft: false
 tags: ["NixOS", "Hugo", "Blowfish", "Flakes", "Web Development", "CSS"]
