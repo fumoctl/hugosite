@@ -1,0 +1,27 @@
+disabled = false
+locale = "en"
+label = "English"
+weight = 1
+title = "fumoctl"
+
+[params]
+  displayName = "EN"
+  isoCode = "en"
+  dateFormat = "2006-01-02"
+  logo = "images/fumoctl-logo.svg"
+  description = "Systems administration, declarative operating systems, NixOS, and homelabbing by Juan (fumoctl)."
+
+[params.author]
+  name = "Juan - Fumoctl"
+  headline = "Argentinian systems administrator & Informatics student.<br>FOSS, declarative systems & homelabbing."
+  image = "images/avatar.jpg"
+  imageQuality = 96
+  bio = "Argentinian systems administrator and Business Informatics student with a passion for free and open-source software, rock-solid systems architecture, and digital sovereignty."
+  links = [
+    { link = "https://fumoctl.com/" },
+    { email = "mailto:juanu@fumoctl.com" },
+    { github = "https://github.com/fumoctl" },
+    { youtube = "https://www.youtube.com/@Fumoctl" },
+    { x-twitter = "https://x.com/Fumoctl" },
+    { linkedin = "https://www.linkedin.com/in/fumoctl" }
+  ]

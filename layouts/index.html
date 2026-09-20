@@ -1,0 +1,6 @@
+{{ define "main" }}
+  {{ partial "home/custom.html" . }}
+  <section id="articles-feed" class="articles-feed-section">
+    {{ partial "recent-articles/main.html" . }}
+  </section>
+{{ end }}

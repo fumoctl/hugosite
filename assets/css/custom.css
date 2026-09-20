@@ -1,0 +1,131 @@
+/* Hero section full height and centering */
+.hero-container {
+  width: 100%;
+  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  text-align: center;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+/* Scroll indicator strictly positioned at bottom */
+.hero-scroll-indicator {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  z-index: 20;
+}
+
+/* Perfect circular avatar */
+.hero-avatar {
+  width: 9rem;
+  height: 9rem;
+  min-width: 9rem;
+  min-height: 9rem;
+  max-width: 9rem;
+  max-height: 9rem;
+  aspect-ratio: 1 / 1;
+  border-radius: 9999px;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease;
+}
+.hero-avatar:hover {
+  transform: scale(1.05);
+}
+
+/* Sleek, thin floating header */
+.homepage-header {
+  position: fixed !important;
+  inset-inline: 0 !important;
+  top: 0.5rem !important;
+  z-index: 100 !important;
+  padding-inline: 0.75rem !important;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@media (min-width: 640px) {
+  .homepage-header {
+    top: 0.75rem !important;
+    padding-inline: 1.5rem !important;
+  }
+}
+
+.homepage-header .header-bar-inner {
+  max-width: 64rem; /* sleek, balanced width */
+  margin-inline: auto;
+  border-radius: 9999px; /* sleek pill */
+  padding: 0.2rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* Thinner navigation bar elements */
+.homepage-header nav {
+  height: 2rem !important; /* was 3rem / 48px */
+  gap: 1rem !important;
+}
+
+.homepage-header .main-menu {
+  padding: 0 !important;
+}
+
+.homepage-header .logo svg,
+.homepage-header .logo img {
+  max-height: 1.5rem !important;
+  max-width: 1.5rem !important;
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+}
+
+.homepage-header a.text-base {
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  line-height: 1.25rem !important;
+}
+
+.homepage-header nav a,
+.homepage-header nav button {
+  font-size: 0.8125rem !important;
+}
+
+.homepage-header #search-button {
+  padding: 0.15rem 0.5rem !important;
+  font-size: 0.75rem !important;
+  border-radius: 0.375rem !important;
+}
+
+.homepage-header.is-hidden {
+  opacity: 0 !important;
+  transform: translateY(-1.5rem) !important;
+  pointer-events: none !important;
+}
+
+.homepage-header.is-visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  pointer-events: auto !important;
+}
+
+/* Articles section below the hero */
+.articles-feed-section {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  padding-top: 4rem;
+  padding-bottom: 6rem;
+}

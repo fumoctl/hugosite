@@ -1,0 +1,93 @@
+<!-- Fixed Background with moody atmospheric overlay -->
+<div class="pointer-events-none fixed inset-0" style="z-index: 0;">
+  {{ $bg := resources.Get (.Site.Params.homepage.homepageImage | default "images/hero-bg.jpg") }}
+  {{ if $bg }}
+    <img
+      id="hero-bg-img"
+      src="{{ $bg.RelPermalink }}"
+      alt="Hero Background"
+      class="nozoom h-full w-full object-cover object-center"
+      role="presentation">
+  {{ end }}
+  <!-- Deep dark tint for contrast & moody aesthetic matching Louis's site -->
+  <div class="absolute inset-0 bg-neutral-950/65 mix-blend-multiply"></div>
+  <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-neutral-950/50"></div>
+</div>
+
+<!-- Dynamic Scroll Backdrop that smoothly darkens & blurs background for article readability -->
+<div
+  id="scroll-backdrop"
+  class="pointer-events-none fixed inset-0 bg-neutral-950/80 backdrop-blur-xl"
+  style="z-index: 1; opacity: 0; transition: opacity 0.3s ease;"
+  aria-hidden="true"></div>
+<script>
+  (function() {
+    const backdrop = document.getElementById("scroll-backdrop");
+    if (!backdrop) return;
+    function updateBackdrop() {
+      const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+      const vh = window.innerHeight;
+      const opacity = Math.min(1, Math.max(0, (scrollY - vh * 0.2) / (vh * 0.4)));
+      backdrop.style.opacity = opacity;
+    }
+    window.addEventListener("scroll", updateBackdrop, { passive: true });
+    updateBackdrop();
+  })();
+</script>
+
+<!-- Hero Profile Section (Louis Velasco Style) - Strict 100vh container -->
+<div class="hero-container" style="z-index: 10;">
+  <!-- Avatar -->
+  {{ $avatar := resources.Get (.Site.Params.Author.image | default "images/avatar.jpg") }}
+  {{ if $avatar }}
+    <div class="mb-4">
+      <img
+        src="{{ $avatar.RelPermalink }}"
+        alt="{{ .Site.Params.Author.name | default `Author` }}"
+        width="144"
+        height="144"
+        class="hero-avatar" />
+    </div>
+  {{ end }}
+
+  <!-- Author Name / Title -->
+  <h1 class="text-4xl sm:text-5xl font-bold font-serif sm:font-sans text-white tracking-tight mb-2 drop-shadow-md">
+    {{ .Site.Params.Author.name | default .Site.Title }}
+  </h1>
+
+  <!-- Headline / Message -->
+  {{ with .Site.Params.Author.headline }}
+    <p class="text-base sm:text-lg text-neutral-300 font-normal mb-5 max-w-lg leading-relaxed drop-shadow">
+      {{ . | markdownify }}
+    </p>
+  {{ end }}
+
+  <!-- Social Links Icons -->
+  {{ with .Site.Params.Author.links }}
+    <div class="flex flex-wrap items-center justify-center gap-5 text-xl text-neutral-300 mb-8">
+      {{ range $links := . }}
+        {{ range $name, $url := $links }}
+          <a
+            href="{{ $url | safeURL }}"
+            target="_blank"
+            rel="me noopener noreferrer"
+            aria-label="{{ $name | title }}"
+            title="{{ $name | title }}"
+            class="p-2 rounded-full hover:text-primary-400 hover:bg-white/5 hover:scale-110 transition-all duration-200">
+            {{ partial "icon.html" $name }}
+          </a>
+        {{ end }}
+      {{ end }}
+    </div>
+  {{ end }}
+
+  <!-- Animated Scroll-Down Prompt strictly anchored at bottom of 100vh hero -->
+  <div
+    class="hero-scroll-indicator text-neutral-400 hover:text-white transition-colors duration-200 group"
+    onclick="const feed = document.getElementById('articles-feed'); if (feed) { feed.scrollIntoView({behavior: 'smooth'}); } else { window.scrollTo({top: window.innerHeight, behavior: 'smooth'}); }">
+    <span class="text-xs uppercase tracking-widest mb-1.5 opacity-60 group-hover:opacity-100 transition-opacity">Scroll to explore</span>
+    <svg class="w-5 h-5 animate-bounce opacity-70 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+    </svg>
+  </div>
+</div>

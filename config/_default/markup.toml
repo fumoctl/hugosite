@@ -1,0 +1,21 @@
+[goldmark]
+  [goldmark.extensions]
+    definitionList = true
+    footnote = true
+    linkify = true
+    strikethrough = true
+    table = true
+    taskList = true
+    typographer = true
+  [goldmark.parser]
+    attribute = true
+    autoHeadingID = true
+    autoHeadingIDType = "github"
+  [goldmark.renderer]
+    hardWraps = false
+    unsafe = true
+[highlight]
+  noClasses = false
+  guessSyntax = true
+  lineNos = true
+  lineNumbersInTable = true
