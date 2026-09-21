@@ -13,10 +13,10 @@ title = "Fumoctl"
 
 [params.author]
   name = "Juan - Fumoctl"
-  headline = "Argentinian systems administrator & Informatics student.<br>FOSS, declarative systems & homelabbing."
+  headline = "Argentinian systems administrator & Business Informatics student.<br>FOSS, declarative systems & homelabbing."
   image = "images/avatar.jpg"
   imageQuality = 96
-  bio = "Argentinian systems administrator & Informatics student.<br>FOSS, declarative systems & homelabbing."
+  bio = "Argentinian systems administrator & Business Informatics student.<br>FOSS, declarative systems & homelabbing."
   links = [
     { link = "https://fumoctl.com/" },
     { email = "mailto:juanu@fumoctl.com" },

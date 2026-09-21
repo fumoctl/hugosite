@@ -55,12 +55,131 @@
     {{ .Site.Params.Author.name | default .Site.Title }}
   </h1>
 
-  <!-- Headline / Message -->
-  {{ with .Site.Params.Author.headline }}
-    <p class="text-base sm:text-lg text-neutral-300 font-normal mb-5 max-w-lg leading-relaxed drop-shadow">
-      {{ . | markdownify }}
-    </p>
-  {{ end }}
+  <!-- Headline / Message with Interactive Typewriter Animation -->
+  <div
+    id="hero-typewriter"
+    class="hero-typewriter-wrapper mb-5 max-w-lg leading-relaxed drop-shadow"
+    role="region"
+    aria-label="Author introduction">
+    <div id="typewriter-display" class="text-base sm:text-lg text-neutral-300 font-normal">
+      <span id="typewriter-text">Argentinian systems administrator &amp; Business Informatics student.<br>FOSS, declarative systems &amp; homelabbing.</span><span id="typewriter-cursor" class="typewriter-cursor" aria-hidden="true">▋</span>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const container = document.getElementById("hero-typewriter");
+      const display = document.getElementById("typewriter-display");
+      if (!container || !display) return;
+
+      const cmdText = "nix develop .#fumoctl";
+      const statusText = "evaluating derivation 'git+file:///home/fumoctl/FumoNix/#nixosConfigurations.fumonix.config.system.build.toplevel'";
+      const bioLines = [
+        "Declarative system administration & homelabbing.",
+        "ᗜˬᗜ"
+      ];
+
+      let animId = 0;
+
+      function sleep(ms, id) {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            if (id === animId) resolve();
+            else reject(new Error("aborted"));
+          }, ms);
+        });
+      }
+
+      async function typeInto(el, text, speed, id) {
+        for (let i = 0; i < text.length; i++) {
+          if (id !== animId) return;
+          el.textContent += text[i];
+          const jitter = Math.random() * 24 - 12;
+          await sleep(Math.max(15, speed + jitter), id);
+        }
+      }
+
+      async function play() {
+        const id = ++animId;
+        try {
+          // Initial pause so the hero layout settles
+          await sleep(500, id);
+
+          // Phase 1: Set up command prompt
+          display.innerHTML = `
+            <div class="typewriter-cmd-line">
+              <span class="typewriter-prompt">&gt;_</span>
+              <span id="tw-cmd"></span>
+              <span class="typewriter-cursor" aria-hidden="true">▋</span>
+            </div>
+            <div id="tw-status" class="typewriter-status-line" style="display: none;"></div>
+          `;
+
+          const cmdEl = document.getElementById("tw-cmd");
+          const statusEl = document.getElementById("tw-status");
+
+          // Type out "nix develop .#fumoctl"
+          await sleep(250, id);
+          await typeInto(cmdEl, cmdText, 55, id);
+
+          // Phase 2: Enter key pressed -> reveal status line ("something in between")
+          await sleep(400, id);
+          if (statusEl) {
+            statusEl.textContent = statusText;
+            statusEl.style.display = "block";
+          }
+
+          // Let the user read the terminal status
+          await sleep(1400, id);
+
+          // Phase 3: Transition smoothly to the bio lines
+          display.style.transition = "opacity 0.2s ease";
+          display.style.opacity = "0";
+          await sleep(220, id);
+
+          display.innerHTML = `
+            <span id="tw-bio-1"></span><br>
+            <span id="tw-bio-2"></span>
+          `;
+          display.style.opacity = "1";
+
+          const line1 = document.getElementById("tw-bio-1");
+          const line2 = document.getElementById("tw-bio-2");
+
+          const cursor = document.createElement("span");
+          cursor.className = "typewriter-cursor";
+          cursor.setAttribute("aria-hidden", "true");
+          cursor.textContent = "▋";
+
+          // Type line 1
+          line1.after(cursor);
+          await typeInto(line1, bioLines[0], 35, id);
+          await sleep(250, id);
+
+          // Move cursor to line 2 & type line 2
+          line2.after(cursor);
+          await typeInto(line2, bioLines[1], 35, id);
+
+          // Phase 4: Animation finished - cleanly remove cursor and do not repeat
+          await sleep(500, id);
+          cursor.style.transition = "opacity 0.25s ease";
+          cursor.style.opacity = "0";
+          setTimeout(() => {
+            if (cursor.parentNode) cursor.remove();
+          }, 250);
+        } catch (e) {
+          // Animation was interrupted
+        }
+      }
+
+      // Start on page load
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", play);
+      } else {
+        play();
+      }
+    })();
+  </script>
 
   <!-- Social Links Icons -->
   {{ with .Site.Params.Author.links }}
