@@ -17,3 +17,15 @@
   name = "Articles"
   pageRef = "posts"
   weight = 10
+
+[[footer]]
+  name = "RSS"
+  url = "/index.xml"
+  pre = "rss"
+  weight = 20
+
+[[footer]]
+  name = "PGP Key"
+  url = "/fumopgp.pub"
+  pre = "pgpkey"
+  weight = 30
