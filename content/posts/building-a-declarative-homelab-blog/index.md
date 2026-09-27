@@ -10,7 +10,7 @@ showSummary: true
 
 Every technologist eventually reaches a crossroads with their digital presence. You start out hosting notes across various third-party platforms, proprietary publishing services, or heavy CMS setups like WordPress or Ghost. But over time, the friction accumulates: database backups, security patches for abandoned plugins, slow page loads, and fragile build pipelines that crumble the moment your local node or python runtime updates.
 
-When I set out to build **Fumoctl**, my personal technical corner on the web, I wanted something completely aligned with my engineering philosophy:
+When I set out to build this website, my personal technical corner on the web, I wanted something completely aligned with my engineering philosophy:
 1. **Digital Sovereignty**: Every single article, image, and template must live as plain text and standard assets in a Git repository. No hidden databases, no vendor lock-in.
 2. **Reproducibility & Zero Drift**: If I clone this repository on a fresh NixOS workstation, a headless homelab server, or CI/CD five years from now, it must build bit-for-bit identically with a single command.
 3. **Sub-100ms Build & Load Performance**: Instant static asset generation with zero client-side JavaScript framework bloat.
