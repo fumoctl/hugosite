@@ -66,8 +66,9 @@ Many older visual novels refuse to run—or render garbled mojibake—unless the
 Traditional guides often advise generating locales system-wide in `/etc/locale.gen`, which can get messy. Because we are using Flatpak apps, you only need to configure Flatpak’s locale subsystem:
 
 ```bash
-# Tell Flatpak to install both English and Japanese runtimes
+# Tell Flatpak to install both English and Japanese runtimes (both user and system-wide)
 flatpak config --user --set languages "en;ja"
+flatpak config --set languages "en;ja"
 
 # Apply changes across all runtimes
 flatpak update
@@ -108,10 +109,10 @@ Heroic makes setting up custom prefix containers straightforward:
 
 4. **Select the Executable:**
 * **If the game is pre-extracted:** Browse directly to the game's `.exe`.
-* **If the game has a setup installer:** Click **Run Installer First**, walk through the installer wizard (install into your simulated `C:` drive or inside `Z:/home/<user>/Games`), and once finished, re-point the main executable path to the installed game binary.
+* **If the game has a setup installer:** Click **Run Installer First**, walk through the installer wizard (install into your simulated `C:` drive or wherever on your system by `Z:/home/<user>/`), and once finished, re-point the main executable path to the installed game binary.
 
 
-5. Click **Finish**.
+1. Click **Finish**.
 
 ---
 
@@ -122,7 +123,7 @@ Most VN releases involve fan translation patches, voice patches, or 18+ content 
 | Patch Type | How to Handle It |
 | --- | --- |
 | **Loose Files / Folders** | Simply drag and drop the files directly into the game folder via your file manager. |
-| **Self-Extracting `.exe**` | Try opening the `.exe` with an archive tool like **7-Zip** or File Roller. If it extracts files, paste them manually. |
+| **Self-Extracting ```.exe```** | Try opening the `.exe` with an archive tool like **7-Zip** or File Roller. If it extracts files, paste them manually. |
 | **Installer Executable** | Open the game's settings page in Heroic, scroll to Wine tools, and choose **Run EXE on Prefix**. Run the patch installer inside the existing virtual environment. |
 
 ---
@@ -147,12 +148,16 @@ If you haven't enabled the locale inside Heroic for that specific title:
 
 Opening cinematic animations (OP/ED movies) in older engines often rely on legacy DirectShow or Windows Media Player components.
 
-* In Heroic's game settings, open the **Winetricks** menu.
-* Search for and install:
+In Heroic's game settings, open the **Winetricks** menu.
+  
+Search for and install dependencies (look up what your game needs, Majikoi S needs these.):
+
 * `wmp9`
 * `quartz`
 * `lavfilters`
-*(Avoid bulk-installing unnecessary DLLs, as overlapping media frameworks can conflict).*
+
+
+(Avoid bulk-installing unnecessary DLLs, as overlapping media frameworks can conflict).*
 
 
 
